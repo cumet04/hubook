@@ -1,35 +1,29 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from "vuetify/es5/util/colors";
 
 export default {
-  mode: 'spa',
+  mode: "spa",
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    titleTemplate: "%s - " + process.env.npm_package_name,
+    title: process.env.npm_package_name || "",
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      {
+        hid: "description",
+        name: "description",
+        content: process.env.npm_package_description || ""
+      }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
-  loading: { color: '#fff' },
-  css: [
-  ],
-  plugins: [
-  ],
-  buildModules: [
-    '@nuxtjs/vuetify',
-  ],
-  modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/pwa',
-  ],
-  axios: {
-  },
+  loading: { color: "#fff" },
+  css: [],
+  plugins: [],
+  buildModules: ["@nuxtjs/vuetify"],
+  modules: ["@nuxtjs/axios", "@nuxtjs/pwa"],
+  axios: {},
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
+    customVariables: ["~/assets/variables.scss"],
     theme: {
       dark: true,
       themes: {
@@ -46,7 +40,6 @@ export default {
     }
   },
   build: {
-    extend (config, ctx) {
-    }
+    extend(config, ctx) {}
   }
-}
+};
