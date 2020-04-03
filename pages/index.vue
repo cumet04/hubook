@@ -2,6 +2,9 @@
   <v-container class="pa-10">
     <v-list two-line subheader>
       <v-subheader>issues</v-subheader>
+      <v-toolbar>
+        <v-text-field v-model="repo"></v-text-field>
+      </v-toolbar>
       <template v-for="(item, index) in issues">
         <v-divider v-if="index != 0" :key="item.number"></v-divider>
         <v-list-item :key="index">
@@ -24,6 +27,9 @@
 import gql from "graphql-tag";
 
 export default {
+  data: () => ({
+    repo: "rails/rails"
+  }),
   methods: {
     iconStyle(issue) {
       return issue.closed ? "red" : "green";
@@ -32,8 +38,8 @@ export default {
   apollo: {
     issues: {
       query: gql`
-        {
-          repository(owner: "rails", name: "rails") {
+        query($owner: String!, $name: String!) {
+          repository(owner: $owner, name: $name) {
             issues(
               states: [OPEN, CLOSED]
               first: 20
@@ -48,6 +54,12 @@ export default {
           }
         }
       `,
+      variables() {
+        return {
+          owner: this.repo.split("/")[0],
+          name: this.repo.split("/")[1]
+        };
+      },
       update: ({ repository }) => repository.issues.nodes
     }
   }
