@@ -20,7 +20,7 @@ export default {
   css: [],
   plugins: [],
   buildModules: ["@nuxtjs/vuetify"],
-  modules: ["@nuxtjs/axios", "@nuxtjs/pwa"],
+  modules: ["@nuxtjs/axios", "@nuxtjs/pwa", "@nuxtjs/apollo"],
   axios: {},
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
@@ -36,6 +36,11 @@ export default {
           success: colors.green.accent3
         }
       }
+    }
+  },
+  apollo: {
+    clientConfigs: {
+      default: "~/plugins/apollo-client-configs.js"
     }
   },
   build: {

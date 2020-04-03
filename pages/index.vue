@@ -4,15 +4,15 @@
       <v-subheader>issues</v-subheader>
       <template v-for="(item, index) in issues">
         <v-divider v-if="index != 0" :key="item.number"></v-divider>
-        <v-list-item :key="item.number">
+        <v-list-item :key="index">
           <v-list-item-icon dense>
-            <v-icon color="green">mdi-alert-circle-outline</v-icon>
+            <v-icon :color="iconStyle(item)">mdi-alert-circle-outline</v-icon>
             <!-- mid-source-pull -->
             <!-- mid-source-merge -->
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title v-text="item.title"></v-list-item-title>
-            <v-list-item-subtitle v-text="item.number"></v-list-item-subtitle>
+            <v-list-item-subtitle>#{{ item.number }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -21,13 +21,35 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
+
 export default {
-  data: () => ({
-    issues: [
-      { title: "some title", number: 1 },
-      { title: "some title 2", number: 2 },
-      { title: "some title 3", number: 3 }
-    ]
-  })
+  methods: {
+    iconStyle(issue) {
+      return issue.closed ? "red" : "green";
+    }
+  },
+  apollo: {
+    issues: {
+      query: gql`
+        {
+          repository(owner: "rails", name: "rails") {
+            issues(
+              states: [OPEN, CLOSED]
+              first: 20
+              orderBy: { direction: DESC, field: UPDATED_AT }
+            ) {
+              nodes {
+                number
+                title
+                closed
+              }
+            }
+          }
+        }
+      `,
+      update: ({ repository }) => repository.issues.nodes
+    }
+  }
 };
 </script>
