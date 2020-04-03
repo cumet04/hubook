@@ -18,7 +18,9 @@
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
     </v-app-bar>
-    <v-content></v-content>
+    <v-content>
+      <nuxt />
+    </v-content>
   </v-app>
 </template>
 
