@@ -17,6 +17,7 @@
     "nuxt": "^2.0.0"
   },
   "devDependencies": {
+    "@mdi/js": "^5.0.45",
     "@nuxtjs/vuetify": "^1.0.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
