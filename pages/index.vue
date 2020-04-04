@@ -21,7 +21,8 @@
 </template>
 
 <script>
-import gql from "graphql-tag";
+import issuesQuery from "~/apollo/queries/issues";
+import pullsQuery from "~/apollo/queries/pulls";
 import IssueListItem from "~/components/IssueListItem.vue";
 import PullreqListItem from "~/components/PullreqListItem.vue";
 
@@ -35,23 +36,7 @@ export default {
   }),
   apollo: {
     issues: {
-      query: gql`
-        query($owner: String!, $name: String!) {
-          repository(owner: $owner, name: $name) {
-            issues(
-              states: [OPEN, CLOSED]
-              first: 5
-              orderBy: { direction: DESC, field: UPDATED_AT }
-            ) {
-              nodes {
-                number
-                title
-                closed
-              }
-            }
-          }
-        }
-      `,
+      query: issuesQuery,
       variables() {
         return {
           owner: this.repo.split("/")[0],
@@ -61,24 +46,7 @@ export default {
       update: ({ repository }) => repository.issues.nodes
     },
     pulls: {
-      query: gql`
-        query($owner: String!, $name: String!) {
-          repository(owner: $owner, name: $name) {
-            pullRequests(
-              states: [OPEN, MERGED, CLOSED]
-              first: 10
-              orderBy: { direction: DESC, field: UPDATED_AT }
-            ) {
-              nodes {
-                number
-                title
-                merged
-                closed
-              }
-            }
-          }
-        }
-      `,
+      query: pullsQuery,
       variables() {
         return {
           owner: this.repo.split("/")[0],

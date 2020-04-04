@@ -1,0 +1,15 @@
+query($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    issues(
+      states: [OPEN, CLOSED]
+      first: 5
+      orderBy: { direction: DESC, field: UPDATED_AT }
+    ) {
+      nodes {
+        number
+        title
+        closed
+      }
+    }
+  }
+}

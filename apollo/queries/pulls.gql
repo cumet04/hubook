@@ -1,0 +1,16 @@
+query($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    pullRequests(
+      states: [OPEN, MERGED, CLOSED]
+      first: 5
+      orderBy: { direction: DESC, field: UPDATED_AT }
+    ) {
+      nodes {
+        number
+        title
+        merged
+        closed
+      }
+    }
+  }
+}
