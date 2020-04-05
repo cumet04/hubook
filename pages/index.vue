@@ -1,5 +1,15 @@
 <template>
   <v-container class="pa-10">
+    <v-list two-line subheader>
+      <v-subheader>notifications</v-subheader>
+      <template v-for="(item, index) in notifications">
+        <v-divider v-if="index != 0" :key="item.number"></v-divider>
+        <notification-list-item
+          :key="index"
+          :notification="item"
+        ></notification-list-item>
+      </template>
+    </v-list>
     <v-toolbar>
       <v-text-field v-model="repo"></v-text-field>
     </v-toolbar>
@@ -17,17 +27,6 @@
         <pullreq-list-item :key="index" :pullreq="item"></pullreq-list-item>
       </template>
     </v-list>
-    <v-list subheader>
-      <v-subheader>notifications</v-subheader>
-      <template v-for="(item, index) in notifications">
-        <v-divider v-if="index != 0" :key="item.number"></v-divider>
-        <v-list-item :key="item.number">
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
-    </v-list>
   </v-container>
 </template>
 
@@ -36,15 +35,18 @@ import issuesQuery from "~/apollo/queries/issues";
 import pullsQuery from "~/apollo/queries/pulls";
 import IssueListItem from "~/components/IssueListItem.vue";
 import PullreqListItem from "~/components/PullreqListItem.vue";
+import NotificationListItem from "~/components/NotificationListItem.vue";
 import GitHub from "github-api";
 
 export default {
   components: {
     "issue-list-item": IssueListItem,
-    "pullreq-list-item": PullreqListItem
+    "pullreq-list-item": PullreqListItem,
+    "notification-list-item": NotificationListItem
   },
   data: () => ({
-    repo: "rails/rails"
+    repo: "rails/rails",
+    notifications: []
   }),
   async asyncData() {
     const me = new GitHub({
@@ -60,7 +62,9 @@ export default {
 
     const notifications = res.data.map(n => ({
       title: n.subject.title,
-      type: n.subject.type
+      type: n.subject.type,
+      number: n.subject.url.split("/").pop(), // TODO: fix hack
+      reponame: n.repository.full_name
     }));
 
     return {
