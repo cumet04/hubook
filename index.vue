@@ -58,14 +58,32 @@ export default {
       return {};
     }
 
-    const notifications = res.data.map(n => ({
-      title: n.subject.title,
-      type: n.subject.type
-    }));
+    const notifications = res.data.map(async n => {
+      const info = await this.getSubjectInfo(n.subject.type, n.subject.url);
+      return {
+        title: n.subject.title,
+        type: n.subject.type,
+        url: info.url
+      };
+    });
 
     return {
-      notifications: notifications
+      notifications: await Promise.all(notifications)
     };
+  },
+  methods: {
+    async getSubjectInfo(type, url) {
+      const gh = new GitHub({ token: localStorage.getItem("github_token") });
+      switch (type) {
+        case "PullRequest":
+          const id = url.split("/").pop();
+          const pr = await gh.getRepository().getPullRequest(id);
+          // if err
+          return {
+            url: pr.data.html_url
+          };
+      }
+    }
   },
   apollo: {
     issues: {
