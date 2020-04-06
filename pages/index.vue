@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-10">
+  <div class="content">
     <v-list two-line subheader>
       <v-subheader>notifications</v-subheader>
       <template v-for="(item, index) in notifications">
@@ -27,7 +27,7 @@
         <pullreq-list-item :key="index" :pullreq="item"></pullreq-list-item>
       </template>
     </v-list>
-  </v-container>
+  </div>
 </template>
 
 <script>
