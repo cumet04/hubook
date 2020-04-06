@@ -11,17 +11,17 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "nuxt": "^2.0.0",
     "@nuxtjs/apollo": "^4.0.0-rc19",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/pwa": "^3.0.0-0",
-    "nuxt": "^2.0.0"
+    "@nuxtjs/vuetify": "^1.0.0",
+    "github-api": "^3.3.0",
+    "@mdi/js": "^5.0.45"
   },
   "devDependencies": {
-    "@mdi/js": "^5.0.45",
-    "@nuxtjs/vuetify": "^1.0.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "github-api": "^3.3.0",
     "prettier": "^1.19.1"
   }
 }
