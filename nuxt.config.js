@@ -20,8 +20,7 @@ export default {
   css: [],
   plugins: [],
   buildModules: ["@nuxtjs/vuetify"],
-  modules: ["@nuxtjs/axios", "@nuxtjs/pwa", "@nuxtjs/apollo"],
-  axios: {},
+  modules: ["@nuxtjs/pwa", "@nuxtjs/apollo"],
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
     theme: {
