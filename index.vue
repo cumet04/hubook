@@ -41,14 +41,14 @@ import GitHub from "github-api";
 export default {
   components: {
     "issue-list-item": IssueListItem,
-    "pullreq-list-item": PullreqListItem
+    "pullreq-list-item": PullreqListItem,
   },
   data: () => ({
-    repo: "rails/rails"
+    repo: "rails/rails",
   }),
   async asyncData() {
     const me = new GitHub({
-      token: localStorage.getItem("github_token")
+      token: localStorage.getItem("github_token"),
     }).getUser();
 
     const res = await me.listNotifications();
@@ -58,17 +58,17 @@ export default {
       return {};
     }
 
-    const notifications = res.data.map(async n => {
+    const notifications = res.data.map(async (n) => {
       const info = await this.getSubjectInfo(n.subject.type, n.subject.url);
       return {
         title: n.subject.title,
         type: n.subject.type,
-        url: info.url
+        url: info.url,
       };
     });
 
     return {
-      notifications: await Promise.all(notifications)
+      notifications: await Promise.all(notifications),
     };
   },
   methods: {
@@ -80,10 +80,10 @@ export default {
           const pr = await gh.getRepository().getPullRequest(id);
           // if err
           return {
-            url: pr.data.html_url
+            url: pr.data.html_url,
           };
       }
-    }
+    },
   },
   apollo: {
     issues: {
@@ -91,21 +91,21 @@ export default {
       variables() {
         return {
           owner: this.repo.split("/")[0],
-          name: this.repo.split("/")[1]
+          name: this.repo.split("/")[1],
         };
       },
-      update: ({ repository }) => repository.issues.nodes
+      update: ({ repository }) => repository.issues.nodes,
     },
     pulls: {
       query: pullsQuery,
       variables() {
         return {
           owner: this.repo.split("/")[0],
-          name: this.repo.split("/")[1]
+          name: this.repo.split("/")[1],
         };
       },
-      update: ({ repository }) => repository.pullRequests.nodes
-    }
-  }
+      update: ({ repository }) => repository.pullRequests.nodes,
+    },
+  },
 };
 </script>

@@ -17,10 +17,10 @@ import TheAppBar from "~/components/TheAppBar.vue";
 export default {
   components: {
     "the-navigation-drawer": TheNavigationDrawer,
-    "the-app-bar": TheAppBar
+    "the-app-bar": TheAppBar,
   },
   data: () => ({
-    drawer: null
-  })
+    drawer: null,
+  }),
 };
 </script>

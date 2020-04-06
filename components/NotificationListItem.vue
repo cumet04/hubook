@@ -24,7 +24,7 @@ export default {
     },
     subtitle() {
       return `${this.notification.reponame} #${this.notification.number}`;
-    }
-  }
+    },
+  },
 };
 </script>

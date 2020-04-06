@@ -27,7 +27,7 @@ export default {
     iconData() {
       if (this.pullreq.merged) return mdiSourceMerge;
       else return mdiSourcePull;
-    }
-  }
+    },
+  },
 };
 </script>

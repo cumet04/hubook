@@ -11,13 +11,13 @@ export default () => {
   // middleware
   const middlewareLink = new ApolloLink((operation, forward) => {
     operation.setContext({
-      headers: { Authorization: `bearer ${token}` }
+      headers: { Authorization: `bearer ${token}` },
     });
     return forward(operation);
   });
   const link = middlewareLink.concat(httpLink);
   return {
     link,
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
   };
 };

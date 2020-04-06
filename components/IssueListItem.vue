@@ -18,7 +18,7 @@ export default {
   computed: {
     iconColor() {
       return this.issue.closed ? "red" : "green";
-    }
-  }
+    },
+  },
 };
 </script>

@@ -25,7 +25,7 @@
 export default {
   props: ["value"],
   data: () => ({
-    links: [{ title: "index", path: "/" }]
-  })
+    links: [{ title: "index", path: "/" }],
+  }),
 };
 </script>
