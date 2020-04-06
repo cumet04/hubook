@@ -1,23 +1,7 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" app clipped>
-      <v-list>
-        <v-list-item
-          nuxt
-          link
-          :to="item.path"
-          v-for="(item, i) in links"
-          :key="i"
-        >
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar app clipped-left>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-    </v-app-bar>
+    <the-navigation-drawer v-model="drawer"></the-navigation-drawer>
+    <the-app-bar @nav-icon-click="drawer = !drawer"></the-app-bar>
     <v-content>
       <nuxt />
     </v-content>
@@ -25,10 +9,16 @@
 </template>
 
 <script>
+import TheNavigationDrawer from "~/components/TheNavigationDrawer.vue";
+import TheAppBar from "~/components/TheAppBar.vue";
+
 export default {
+  components: {
+    "the-navigation-drawer": TheNavigationDrawer,
+    "the-app-bar": TheAppBar
+  },
   data: () => ({
-    drawer: null,
-    links: [{ title: "index", path: "/" }]
+    drawer: null
   })
 };
 </script>
