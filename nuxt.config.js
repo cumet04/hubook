@@ -18,7 +18,7 @@ export default {
   },
   loading: { color: "#fff" },
   css: [],
-  plugins: [],
+  plugins: [{ src: "~/plugins/localStorage.js", ssr: false }],
   buildModules: ["@nuxtjs/vuetify"],
   modules: ["@nuxtjs/pwa", "@nuxtjs/apollo"],
   vuetify: {

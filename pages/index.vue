@@ -50,7 +50,7 @@ export default {
   }),
   async asyncData() {
     const me = new GitHub({
-      token: localStorage.getItem("github_token"),
+      token: localStorage.getItem("github_token"), // TODO:
     }).getUser();
 
     const res = await me.listNotifications();
