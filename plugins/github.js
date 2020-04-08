@@ -3,14 +3,14 @@ import { GraphQLClient } from "graphql-request";
 
 function gh() {
   const res = new GitHub({
-    apiBase: $nuxt.$store.state.settings.githubApiBase,
+    apiBase: $nuxt.$store.state.settings.githubApiBase, // TODO: for ghe
     token: $nuxt.$store.state.settings.githubApiToken,
   });
   return res;
 }
 
 function qlClient() {
-  const endpoint = "https://api.github.com/graphql"; // TODO:
+  const endpoint = `${$nuxt.$store.state.settings.githubApiBase}/graphql`;
   const token = $nuxt.$store.state.settings.githubApiToken;
   return new GraphQLClient(endpoint, {
     headers: {
