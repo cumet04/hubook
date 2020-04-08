@@ -1,4 +1,5 @@
 import GitHub from "github-api";
+import PullRequestQuery from "~/apollo/queries/PullRequest.gql";
 
 function gh() {
   const res = new GitHub({
@@ -6,6 +7,10 @@ function gh() {
     token: $nuxt.$store.state.settings.githubApiToken,
   });
   return res;
+}
+
+function apollo() {
+  return $nuxt.$apollo;
 }
 
 function raise(res, msg) {
@@ -17,10 +22,21 @@ function raise(res, msg) {
 }
 
 export default {
-  async listNotifications() {
-    const res = await gh().getUser().listNotifications();
+  async listNotifications(since = null) {
+    const op = since ? { since } : {};
+    const res = await gh().getUser().listNotifications(op);
     if (res.status != 200) raise(res, "get notifications failed");
 
-    return res.data;
+    return {
+      data: res.data,
+      interval: res.headers["x-poll-interval"],
+    };
+  },
+  async fetchPullRequest(owner, name, number) {
+    const res = await apollo().query({
+      query: PullRequestQuery,
+      variables: { owner, name, number },
+    });
+    return res.data.repository.pullRequest;
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="notification_list_item">
-    <v-list-item>
+    <v-list-item @click="click">
       <v-list-item-icon dense>
         <v-icon :color="iconColor">{{ iconData }}</v-icon>
       </v-list-item-icon>
@@ -23,7 +23,15 @@ export default {
       return "mdi-alert-circle-outline"; // TODO: tmp
     },
     subtitle() {
-      return `${this.notification.reponame} #${this.notification.number}`;
+      const n = this.notification;
+      return `${n.repo.owner}/${n.repo.name} #${this.notification.number}`;
+    },
+  },
+  methods: {
+    click() {
+      this.notification.subject().then((subject) => {
+        alert(`merged: ${subject.merged}, closed: ${subject.closed}`);
+      });
     },
   },
 };
