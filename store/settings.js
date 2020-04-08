@@ -25,6 +25,5 @@ export const actions = {
   setGithubApiParams({ commit }, { base, token }) {
     commit("setGithubApiBase", base);
     commit("setGithubApiToken", token);
-    this.app.apolloProvider.clients.defaultClient.cache.reset();
   },
 };

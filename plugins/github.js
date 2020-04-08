@@ -1,5 +1,5 @@
 import GitHub from "github-api";
-import PullRequestQuery from "~/apollo/queries/PullRequest.gql";
+import { GraphQLClient } from "graphql-request";
 
 function gh() {
   const res = new GitHub({
@@ -9,8 +9,14 @@ function gh() {
   return res;
 }
 
-function apollo() {
-  return $nuxt.$apollo;
+function qlClient() {
+  const endpoint = "https://api.github.com/graphql"; // TODO:
+  const token = $nuxt.$store.state.settings.githubApiToken;
+  return new GraphQLClient(endpoint, {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  });
 }
 
 function raise(res, msg) {
@@ -33,10 +39,24 @@ export default {
     };
   },
   async fetchPullRequest(owner, name, number) {
-    const res = await apollo().query({
-      query: PullRequestQuery,
-      variables: { owner, name, number },
+    const query = `
+      query($owner: String!, $name: String!, $number: Int!) {
+        repository(owner: $owner, name: $name) {
+          pullRequest(number: $number) {
+            number
+            title
+            merged
+            closed
+          }
+        }
+      }
+    `;
+
+    const res = await qlClient().request(query, {
+      owner,
+      name,
+      number,
     });
-    return res.data.repository.pullRequest;
+    return res.repository.pullRequest;
   },
 };

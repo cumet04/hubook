@@ -20,7 +20,7 @@ export default {
   css: [],
   plugins: [{ src: "~/plugins/localStorage.js", ssr: false }],
   buildModules: ["@nuxtjs/vuetify"],
-  modules: ["@nuxtjs/pwa", "@nuxtjs/apollo"],
+  modules: ["@nuxtjs/pwa"],
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
     theme: {
@@ -38,11 +38,6 @@ export default {
     },
     icons: {
       iconfont: "mdiSvg",
-    },
-  },
-  apollo: {
-    clientConfigs: {
-      default: "~/apollo/client-configs.js",
     },
   },
   build: {
