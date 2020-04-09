@@ -13,14 +13,34 @@
 </template>
 
 <script>
+import { mdiSourceMerge } from "@mdi/js";
+import { mdiSourcePull } from "@mdi/js";
+
 export default {
   props: ["notification"],
   computed: {
     iconColor() {
-      return "green"; // TODO: tmp
+      switch (this.notification.type) {
+        case "PullRequest":
+          const pr = this.notification.subject;
+          if (pr.drafted) return "gray";
+          else if (pr.merged) return "purple";
+          else if (pr.closed) return "red";
+          else return "green";
+        case "Issue":
+          return "green";
+        // return this.notification.subject.closed ? "red" : "green";
+      }
     },
     iconData() {
-      return "mdi-alert-circle-outline"; // TODO: tmp
+      switch (this.notification.type) {
+        case "PullRequest":
+          const pr = this.notification.subject;
+          if (pr.merged) return mdiSourceMerge;
+          else return mdiSourcePull;
+        case "Issue":
+          return "mdi-alert-circle-outline";
+      }
     },
     subtitle() {
       const n = this.notification;

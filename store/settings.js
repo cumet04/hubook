@@ -21,6 +21,12 @@ export const mutations = {
   },
 };
 
+export const getters = {
+  githubApiBase(state) {
+    return state.githubApiBase || "https://api.github.com/";
+  },
+};
+
 export const actions = {
   setGithubApiParams({ commit }, { base, token }) {
     commit("setGithubApiBase", base);

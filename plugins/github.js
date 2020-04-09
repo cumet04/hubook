@@ -3,14 +3,14 @@ import { GraphQLClient } from "graphql-request";
 
 function gh() {
   const res = new GitHub({
-    apiBase: $nuxt.$store.state.settings.githubApiBase, // TODO: for ghe
+    apiBase: $nuxt.$store.getters["settings/githubApiBase"], // TODO: for ghe
     token: $nuxt.$store.state.settings.githubApiToken,
   });
   return res;
 }
 
 function qlClient() {
-  const endpoint = `${$nuxt.$store.state.settings.githubApiBase}/graphql`;
+  const endpoint = `${$nuxt.$store.getters["settings/githubApiBase"]}graphql`;
   const token = $nuxt.$store.state.settings.githubApiToken;
   return new GraphQLClient(endpoint, {
     headers: {
@@ -47,16 +47,31 @@ export default {
             title
             merged
             closed
+            isDraft
+            createdAt
+            updatedAt
           }
         }
       }
     `;
 
-    const res = await qlClient().request(query, {
-      owner,
-      name,
-      number,
-    });
-    return res.repository.pullRequest;
+    const raw = (
+      await qlClient().request(query, {
+        owner,
+        name,
+        number,
+      })
+    ).repository.pullRequest;
+
+    return {
+      repository: { owner, name },
+      number: raw.number,
+      title: raw.title,
+      merged: raw.merged,
+      closed: raw.closed,
+      drafted: raw.isDraft,
+      createdAt: new Date(Date.parse(raw.createdAt)),
+      updatedAt: new Date(Date.parse(raw.updatedAt)),
+    };
   },
 };

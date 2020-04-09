@@ -3,7 +3,7 @@
     <v-list two-line subheader>
       <v-subheader>notifications</v-subheader>
       <template v-for="(item, index) in notifications">
-        <v-divider v-if="index != 0" :key="item.number"></v-divider>
+        <v-divider v-if="index != 0" :key="item.id"></v-divider>
         <notification-list-item
           :key="index"
           :notification="item"
