@@ -22,7 +22,7 @@ export const getters = {
   all: (state) => Object.values(state._all),
   index: (_, getters) => (limit) => {
     return getters.all
-      .sort((a, b) => b.updatedAt - a.updatedAt)
+      .sort((a, b) => b.lastReadAt - a.lastReadAt)
       .slice(0, limit);
   },
 };
@@ -62,6 +62,7 @@ function mapping(apidata) {
   const data = {
     id: apidata.id,
     updatedAt: new Date(Date.parse(apidata.updated_at)),
+    lastReadAt: new Date(Date.parse(apidata.last_read_at)),
     title: apidata.subject.title,
     type: apidata.subject.type,
     number: parseInt(apidata.subject.url.split("/").pop()), // TODO: fix hack
