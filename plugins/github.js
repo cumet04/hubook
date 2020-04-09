@@ -74,4 +74,36 @@ export default {
       updatedAt: new Date(Date.parse(raw.updatedAt)),
     };
   },
+  async fetchIssue(owner, name, number) {
+    const query = `
+      query($owner: String!, $name: String!, $number: Int!) {
+        repository(owner: $owner, name: $name) {
+          issue(number: $number) {
+            number
+            title
+            closed
+            createdAt
+            updatedAt
+          }
+        }
+      }
+    `;
+
+    const raw = (
+      await qlClient().request(query, {
+        owner,
+        name,
+        number,
+      })
+    ).repository.issue;
+
+    return {
+      repository: { owner, name },
+      number: raw.number,
+      title: raw.title,
+      closed: raw.closed,
+      createdAt: new Date(Date.parse(raw.createdAt)),
+      updatedAt: new Date(Date.parse(raw.updatedAt)),
+    };
+  },
 };

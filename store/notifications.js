@@ -42,6 +42,13 @@ export const actions = {
               value.number
             );
             break;
+          case "Issue":
+            value.subject = await github.fetchIssue(
+              value.repo.owner,
+              value.repo.name,
+              value.number
+            );
+            break;
         }
         return value;
       })

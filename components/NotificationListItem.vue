@@ -28,8 +28,7 @@ export default {
           else if (pr.closed) return "red";
           else return "green";
         case "Issue":
-          return "green";
-        // return this.notification.subject.closed ? "red" : "green";
+          return this.notification.subject.closed ? "red" : "green";
       }
     },
     iconData() {
