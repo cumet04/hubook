@@ -20,25 +20,22 @@ export default {
   props: ["notification"],
   computed: {
     iconColor() {
-      switch (this.notification.type) {
-        case "PullRequest":
-          const pr = this.notification.subject;
-          if (pr.drafted) return "gray";
-          else if (pr.merged) return "purple";
-          else if (pr.closed) return "red";
-          else return "green";
-        case "Issue":
-          return this.notification.subject.closed ? "red" : "green";
+      const n = this.notification;
+      if (n.type == "Issue") {
+        return n.subject.closed ? "red" : "green";
+      } else if (n.type == "PullRequest") {
+        if (n.subject.drafted) return "gray";
+        else if (n.subject.merged) return "purple";
+        else if (n.subject.closed) return "red";
+        else return "green";
       }
     },
     iconData() {
-      switch (this.notification.type) {
-        case "PullRequest":
-          const pr = this.notification.subject;
-          if (pr.merged) return mdiSourceMerge;
-          else return mdiSourcePull;
-        case "Issue":
-          return "mdi-alert-circle-outline";
+      const n = this.notification;
+      if (n.type == "Issue") {
+        return "mdi-alert-circle-outline";
+      } else if (n.type == "PullRequest") {
+        return n.subject.merged ? mdiSourceMerge : mdiSourcePull;
       }
     },
     subtitle() {
