@@ -64,28 +64,22 @@ export default {
     };
   },
   async fetchPullRequest({ owner, name, number }) {
-    const query = `
-      query($owner: String!, $name: String!, $number: Int!) {
-        repository(owner: $owner, name: $name) {
-          pullRequest(number: $number) {
-            number
-            title
-            merged
-            closed
-            isDraft
-            createdAt
-            updatedAt
+    const raw = (
+      await qlClient().request(`
+        query {
+          repository(owner: "${owner}", name: "${name}") {
+            pullRequest(number: ${number}) {
+              number
+              title
+              merged
+              closed
+              isDraft
+              createdAt
+              updatedAt
+            }
           }
         }
-      }
-    `;
-
-    const raw = (
-      await qlClient().request(query, {
-        owner,
-        name,
-        number,
-      })
+      `)
     ).repository.pullRequest;
 
     return {
@@ -100,26 +94,20 @@ export default {
     };
   },
   async fetchIssue({ owner, name, number }) {
-    const query = `
-      query($owner: String!, $name: String!, $number: Int!) {
-        repository(owner: $owner, name: $name) {
-          issue(number: $number) {
-            number
-            title
-            closed
-            createdAt
-            updatedAt
+    const raw = (
+      await qlClient().request(`
+        query {
+          repository(owner: "${owner}", name: "${name}") {
+            issue(number: ${number}) {
+              number
+              title
+              closed
+              createdAt
+              updatedAt
+            }
           }
         }
-      }
-    `;
-
-    const raw = (
-      await qlClient().request(query, {
-        owner,
-        name,
-        number,
-      })
+      `)
     ).repository.issue;
 
     return {
