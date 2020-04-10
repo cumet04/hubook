@@ -43,7 +43,7 @@ export default {
     },
     subtitle() {
       const n = this.notification;
-      return `${n.repo.owner}/${n.repo.name} #${this.notification.number}`;
+      return `${n.repository.owner}/${n.repository.name} #${n.number}`;
     },
   },
   methods: {

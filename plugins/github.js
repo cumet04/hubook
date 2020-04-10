@@ -27,6 +27,10 @@ function raise(res, msg) {
   throw msg;
 }
 
+function parseDate(datestr) {
+  return new Date(Date.parse(datestr));
+}
+
 export default {
   async listNotifications(since = null) {
     const op = since ? { since } : {};
@@ -34,11 +38,32 @@ export default {
     if (res.status != 200) raise(res, "get notifications failed");
 
     return {
-      data: res.data,
       interval: res.headers["x-poll-interval"],
+      notifications: res.data.map((raw) => {
+        // MEMO: This application supposes that subject type is issue or pull-req.
+        // I don't know the type can be except these...
+        const type = raw.subject.type;
+        if (type != "Issue" && type != "PullRequest") {
+          raise(raw, "subject type is not issue nor pull-req");
+        }
+
+        return {
+          id: raw.id,
+          updatedAt: parseDate(raw.updated_at),
+          lastReadAt: parseDate(raw.last_read_at),
+          title: raw.subject.title,
+          type: raw.subject.type,
+          subject: {},
+          number: parseInt(raw.subject.url.split("/").pop()), // TODO: fix hack
+          repository: {
+            owner: raw.repository.owner.login, // TODO: org?
+            name: raw.repository.name,
+          },
+        };
+      }),
     };
   },
-  async fetchPullRequest(owner, name, number) {
+  async fetchPullRequest({ owner, name, number }) {
     const query = `
       query($owner: String!, $name: String!, $number: Int!) {
         repository(owner: $owner, name: $name) {
@@ -70,11 +95,11 @@ export default {
       merged: raw.merged,
       closed: raw.closed,
       drafted: raw.isDraft,
-      createdAt: new Date(Date.parse(raw.createdAt)),
-      updatedAt: new Date(Date.parse(raw.updatedAt)),
+      createdAt: parseDate(raw.createdAt),
+      updatedAt: parseDate(raw.updatedAt),
     };
   },
-  async fetchIssue(owner, name, number) {
+  async fetchIssue({ owner, name, number }) {
     const query = `
       query($owner: String!, $name: String!, $number: Int!) {
         repository(owner: $owner, name: $name) {
@@ -102,8 +127,8 @@ export default {
       number: raw.number,
       title: raw.title,
       closed: raw.closed,
-      createdAt: new Date(Date.parse(raw.createdAt)),
-      updatedAt: new Date(Date.parse(raw.updatedAt)),
+      createdAt: parseDate(raw.createdAt),
+      updatedAt: parseDate(raw.updatedAt),
     };
   },
 };

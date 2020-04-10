@@ -28,48 +28,23 @@ export const getters = {
 };
 
 export const actions = {
-  async fetchNotifications({ state, commit }) {
-    const res = await github.listNotifications();
-    commit("setNextUpdate", new Date(Date.now() + res.interval * 1000));
-    const values = await Promise.all(
-      res.data.map(async (raw) => {
-        const value = mapping(raw);
-        switch (value.type) {
-          case "PullRequest":
-            value.subject = await github.fetchPullRequest(
-              value.repo.owner,
-              value.repo.name,
-              value.number
-            );
-            break;
-          case "Issue":
-            value.subject = await github.fetchIssue(
-              value.repo.owner,
-              value.repo.name,
-              value.number
-            );
-            break;
+  async fetchNotifications({ commit }) {
+    const { notifications, interval } = await github.listNotifications();
+    await Promise.all(
+      notifications.map(async (n) => {
+        const info = {
+          owner: n.repository.owner,
+          name: n.repository.name,
+          number: n.number,
+        };
+        if (n.type == "Issue") {
+          n.subject = await github.fetchIssue(info);
+        } else if (n.type == "PullRequest") {
+          n.subject = await github.fetchPullRequest(info);
         }
-        return value;
       })
     );
-    commit("upsertMulti", values);
+    commit("upsertMulti", notifications);
+    commit("setNextUpdate", new Date(Date.now() + interval * 1000));
   },
 };
-
-// API result object -> model data object
-function mapping(apidata) {
-  const data = {
-    id: apidata.id,
-    updatedAt: new Date(Date.parse(apidata.updated_at)),
-    lastReadAt: new Date(Date.parse(apidata.last_read_at)),
-    title: apidata.subject.title,
-    type: apidata.subject.type,
-    number: parseInt(apidata.subject.url.split("/").pop()), // TODO: fix hack
-    repo: {
-      owner: apidata.repository.owner.login, // TODO: org?
-      name: apidata.repository.name,
-    },
-  };
-  return data;
-}
