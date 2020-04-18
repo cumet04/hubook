@@ -25,6 +25,10 @@
         <v-btn color="primary" text @click="save">Save</v-btn>
       </v-card-actions>
     </v-card>
+    <!-- 'timeout' requires number, but prettier formats 'timeout=2000' to timeout="2000" -->
+    <v-snackbar v-model="snackbar" :timeout="2000" @click="snackbar = false">
+      saved !
+    </v-snackbar>
   </v-dialog>
 </template>
 
@@ -33,6 +37,7 @@ export default {
   props: ["value"],
   data() {
     return {
+      snackbar: false,
       githubApiBase: this.$store.state.settings.githubApiBase,
       githubApiToken: null,
     };
@@ -46,8 +51,7 @@ export default {
         base: this.githubApiBase,
         token: this.githubApiToken,
       });
-      this.close();
-      // TODO: alert
+      this.snackbar = true;
     },
   },
 };
