@@ -1,5 +1,5 @@
 <template>
-  <v-dialog max-width="600px" :value="value" @input="$emit('input', $event)">
+  <v-dialog max-width="600px" :value="value" @input="change($event)">
     <template v-slot:activator="{ on }">
       <slot v-bind:on="on"></slot>
     </template>
@@ -21,7 +21,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" text @click="close">Close</v-btn>
+        <v-btn color="primary" text @click="$emit('input', false)">Close</v-btn>
         <v-btn color="primary" text @click="save">Save</v-btn>
       </v-card-actions>
     </v-card>
@@ -35,16 +35,22 @@
 <script>
 export default {
   props: ["value"],
-  data() {
-    return {
-      snackbar: false,
-      githubApiBase: this.$store.state.settings.githubApiBase,
-      githubApiToken: null,
-    };
-  },
+  data: () => ({
+    snackbar: false,
+    githubApiBase: null,
+    githubApiToken: null,
+  }),
   methods: {
-    close() {
-      this.$emit("input", false);
+    change(event) {
+      if (event) {
+        // initialize data on open
+        Object.assign(this.$data, {
+          snackbar: false,
+          githubApiBase: this.$store.state.settings.githubApiBase,
+          githubApiToken: this.$store.state.settings.githubApiToken,
+        });
+      }
+      this.$emit("input", event);
     },
     save() {
       this.$store.dispatch("settings/setGithubApiParams", {
