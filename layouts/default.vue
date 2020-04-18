@@ -20,7 +20,7 @@ export default {
     "the-app-bar": TheAppBar,
   },
   data: () => ({
-    drawer: null,
+    drawer: false,
   }),
 };
 </script>

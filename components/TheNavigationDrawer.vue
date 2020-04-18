@@ -4,6 +4,7 @@
     @input="$emit('input', $event)"
     app
     clipped
+    temporary
   >
     <v-list>
       <v-list-item
