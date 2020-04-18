@@ -1,6 +1,6 @@
 <template>
   <div class="notification_list_item">
-    <v-list-item @click="click">
+    <v-list-item>
       <v-list-item-icon dense>
         <v-icon :color="iconColor">{{ iconData }}</v-icon>
       </v-list-item-icon>
@@ -41,13 +41,6 @@ export default {
     subtitle() {
       const n = this.notification;
       return `${n.repository.owner}/${n.repository.name} #${n.number}`;
-    },
-  },
-  methods: {
-    click() {
-      this.notification.subject().then((subject) => {
-        alert(`merged: ${subject.merged}, closed: ${subject.closed}`);
-      });
     },
   },
 };

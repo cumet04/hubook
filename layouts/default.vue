@@ -3,7 +3,7 @@
     <the-navigation-drawer v-model="drawer"></the-navigation-drawer>
     <the-app-bar @nav-icon-click="drawer = !drawer"></the-app-bar>
     <v-content>
-      <v-container class="pa-10">
+      <v-container fluid class="pa-10">
         <nuxt />
       </v-container>
     </v-content>
