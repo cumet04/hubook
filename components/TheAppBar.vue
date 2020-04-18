@@ -6,8 +6,23 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn icon nuxt to="/settings">
-      <v-icon>mdi-cog</v-icon>
-    </v-btn>
+    <the-settings-dialog v-model="settings" v-slot:default="{ on }">
+      <v-btn icon v-on="on">
+        <v-icon>mdi-cog</v-icon>
+      </v-btn>
+    </the-settings-dialog>
   </v-app-bar>
 </template>
+
+<script>
+import TheSettingsDialog from "~/components/TheSettingsDialog.vue";
+
+export default {
+  components: {
+    "the-settings-dialog": TheSettingsDialog,
+  },
+  data: () => ({
+    settings: false,
+  }),
+};
+</script>
