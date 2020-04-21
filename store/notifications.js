@@ -38,9 +38,9 @@ export const actions = {
           number: n.number,
         };
         if (n.type == "Issue") {
-          n.subject = await github.fetchIssue(info);
+          n.summary = await github.fetchIssueSummary(info);
         } else if (n.type == "PullRequest") {
-          n.subject = await github.fetchPullRequest(info);
+          n.summary = await github.fetchPullRequest(info);
         }
       })
     );

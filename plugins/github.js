@@ -53,7 +53,7 @@ export default {
           lastReadAt: parseDate(raw.last_read_at),
           title: raw.subject.title,
           type: raw.subject.type,
-          subject: {},
+          summary: {},
           number: parseInt(raw.subject.url.split("/").pop()), // TODO: fix hack
           repository: {
             owner: raw.repository.owner.login, // TODO: org?
@@ -93,7 +93,7 @@ export default {
       updatedAt: parseDate(raw.updatedAt),
     };
   },
-  async fetchIssue({ owner, name, number }) {
+  async fetchIssueSummary({ owner, name, number }) {
     const raw = (
       await qlClient().request(`
         query {
@@ -102,8 +102,6 @@ export default {
               number
               title
               closed
-              createdAt
-              updatedAt
             }
           }
         }
@@ -115,8 +113,56 @@ export default {
       number: raw.number,
       title: raw.title,
       closed: raw.closed,
-      createdAt: parseDate(raw.createdAt),
-      updatedAt: parseDate(raw.updatedAt),
+    };
+  },
+  async fetchIssue({ owner, name, number }) {
+    const per = 5;
+    const raw = (
+      await qlClient().request(`
+        query {
+          repository(owner: "${owner}", name: "${name}") {
+            issue(number: ${number}) {
+              number
+              title
+              closed
+              publishedAt
+              author {
+                avatarUrl
+                login
+              }
+              bodyText
+              comments(first: ${per}) {
+                nodes {
+                  author {
+                    avatarUrl
+                    login
+                  }
+                  bodyText
+                  publishedAt
+                }
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+              }
+            }
+          }
+        }
+      `)
+    ).repository.issue;
+
+    // FIXME: app usable data structure
+    const page = raw.comments.pageInfo;
+    return {
+      repository: { owner, name },
+      number: raw.number,
+      title: raw.title,
+      closed: raw.closed,
+      author: raw.author,
+      bodyText: raw.bodyText,
+      publishedAt: parseDate(raw.publishedAt),
+      comments: raw.comments.nodes,
+      nextCommentCursor: page.hasNextPage ? page.endCursor : null,
     };
   },
 };

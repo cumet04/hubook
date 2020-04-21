@@ -22,11 +22,11 @@ export default {
     iconColor() {
       const n = this.notification;
       if (n.type == "Issue") {
-        return n.subject.closed ? "red" : "green";
+        return n.summary.closed ? "red" : "green";
       } else if (n.type == "PullRequest") {
-        if (n.subject.drafted) return "gray";
-        else if (n.subject.merged) return "purple";
-        else if (n.subject.closed) return "red";
+        if (n.summary.drafted) return "gray";
+        else if (n.summary.merged) return "purple";
+        else if (n.summary.closed) return "red";
         else return "green";
       }
     },
@@ -35,7 +35,7 @@ export default {
       if (n.type == "Issue") {
         return "mdi-alert-circle-outline";
       } else if (n.type == "PullRequest") {
-        return n.subject.merged ? mdiSourceMerge : mdiSourcePull;
+        return n.summary.merged ? mdiSourceMerge : mdiSourcePull;
       }
     },
     subtitle() {

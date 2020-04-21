@@ -18,13 +18,13 @@
       <div v-show="detailOpen">
         <v-card elevation="0" style="min-width: 500px;">
           <issue-detail
-            v-if="selectedType == 'Issue'"
-            :subject="selected.subject"
+            v-if="selectedType == 'Issue' && selectedSubject"
+            :subject="selectedSubject"
           ></issue-detail>
-          <pullrequest-detail
+          <!-- <pullrequest-detail
             v-if="selectedType == 'PullRequest'"
             :subject="selected.subject"
-          ></pullrequest-detail>
+          ></pullrequest-detail> -->
         </v-card>
       </div>
     </v-expand-x-transition>
@@ -44,6 +44,7 @@ export default {
   },
   data: () => ({
     selectedIndex: null,
+    selectedSubject: null,
   }),
   mounted() {
     setTimeout(() => {
@@ -61,6 +62,19 @@ export default {
       return this.selected?.type;
     },
     detailOpen() {
+      if (this.selectedType == "Issue") {
+        const s = this.selected;
+        this.$store
+          .dispatch("issues/fetch", {
+            owner: s.repository.owner,
+            name: s.repository.name,
+            number: s.number,
+          })
+          .then((data) => {
+            this.selectedSubject = data;
+          });
+      } // else if
+
       return this.selectedIndex != null;
     },
   },
