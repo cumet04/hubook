@@ -33,6 +33,35 @@ function parseDate(datestr) {
   return new Date(Date.parse(datestr));
 }
 
+const authorQuery = () => `
+author {
+  avatarUrl
+  login
+}
+`;
+
+const commentsQuery = (per) => `
+comments(first: ${per}) {
+  nodes {
+    ${authorQuery()}
+    bodyText
+    publishedAt
+  }
+  pageInfo {
+    hasNextPage
+    endCursor
+  }
+}
+`;
+
+function mapCommentsData(data) {
+  const page = data.comments.pageInfo;
+  return {
+    comments: data.comments.nodes,
+    nextCommentCursor: page.hasNextPage ? page.endCursor : null,
+  };
+}
+
 export default {
   async listNotifications(since = null) {
     const op = since ? { since } : {};
@@ -103,32 +132,15 @@ export default {
               title
               closed
               publishedAt
-              author {
-                avatarUrl
-                login
-              }
+              ${authorQuery()}
               bodyText
-              comments(first: ${per}) {
-                nodes {
-                  author {
-                    avatarUrl
-                    login
-                  }
-                  bodyText
-                  publishedAt
-                }
-                pageInfo {
-                  hasNextPage
-                  endCursor
-                }
-              }
+              ${commentsQuery(per)}
             }
           }
         }
       `)
     ).repository.issue;
 
-    const page = raw.comments.pageInfo;
     return {
       identifier: { owner, name, number },
       title: raw.title,
@@ -136,8 +148,7 @@ export default {
       author: raw.author,
       bodyText: raw.bodyText,
       publishedAt: parseDate(raw.publishedAt),
-      comments: raw.comments.nodes,
-      nextCommentCursor: page.hasNextPage ? page.endCursor : null,
+      ...mapCommentsData(raw),
     };
   },
 };

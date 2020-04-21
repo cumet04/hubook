@@ -24,7 +24,6 @@ export const getters = {
 export const actions = {
   async fetch({ commit, getters }, { identifier, force = false }) {
     if (!force) {
-      console.log(identifier);
       const cache = getters.find(identifier);
       if (cache) return cache;
     }
