@@ -33,26 +33,20 @@ export default {
   },
   computed: {
     iconColor() {
-      const s = this.subject;
-      if (!s) return "";
-
-      if (this.notification.type == "Issue") {
-        return s.closed ? "red" : "green";
-      } else if (this.notification.type == "PullRequest") {
-        if (s.drafted) return "gray";
-        else if (s.merged) return "purple";
-        else if (s.closed) return "red";
-        else return "green";
-      }
+      return {
+        open: "green",
+        closed: "red",
+        draft: "gray",
+        merged: "purple",
+      }[this.subject?.status];
     },
     iconData() {
-      const s = this.subject;
-      if (!s) return "";
+      if (!this.subject) return "";
 
       if (this.notification.type == "Issue") {
         return "mdi-alert-circle-outline";
       } else if (this.notification.type == "PullRequest") {
-        return s.merged ? mdiSourceMerge : mdiSourcePull;
+        return this.subject.status == "merged" ? mdiSourceMerge : mdiSourcePull;
       }
     },
     subtitle() {

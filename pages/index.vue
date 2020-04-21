@@ -12,10 +12,10 @@
         </template>
       </v-list-item-group>
     </v-list>
-    <v-divider vertical class="mx-4" v-show="detailOpen"></v-divider>
+    <v-divider vertical class="mx-4" v-if="selected"></v-divider>
     <v-expand-x-transition>
       <!-- for transition, separate v-show and min-width -->
-      <div v-show="detailOpen">
+      <div v-if="selected">
         <v-card elevation="0" style="min-width: 500px;">
           <issue-detail
             v-if="selectedType == 'Issue' && selectedSubject"
@@ -60,9 +60,6 @@ export default {
     },
     selectedType() {
       return this.selected?.type;
-    },
-    detailOpen() {
-      return this.selectedIndex != null;
     },
   },
   watch: {

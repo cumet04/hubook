@@ -118,9 +118,12 @@ export default {
     return {
       identifier: { owner, name, number },
       title: raw.title,
-      merged: raw.merged, // TODO: to status string
-      closed: raw.closed,
-      drafted: raw.isDraft,
+      status: (() => {
+        if (raw.merged) return "merged";
+        if (raw.drafted) return "draft";
+        if (raw.closed) return "closed";
+        return "open";
+      })(),
       author: raw.author,
       bodyText: raw.bodyText,
       publishedAt: parseDate(raw.publishedAt),
@@ -150,7 +153,7 @@ export default {
     return {
       identifier: { owner, name, number },
       title: raw.title,
-      closed: raw.closed,
+      status: raw.closed ? "closed" : "open",
       author: raw.author,
       bodyText: raw.bodyText,
       publishedAt: parseDate(raw.publishedAt),
