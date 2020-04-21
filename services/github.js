@@ -57,7 +57,10 @@ comments(first: ${per}) {
 function mapCommentsData(data) {
   const page = data.comments.pageInfo;
   return {
-    comments: data.comments.nodes,
+    comments: data.comments.nodes.map((raw) => {
+      raw.publishedAt = parseDate(raw.publishedAt);
+      return raw;
+    }),
     nextCommentCursor: page.hasNextPage ? page.endCursor : null,
   };
 }
@@ -102,6 +105,8 @@ export default {
             pullRequest(number: ${number}) {
               number
               title
+              baseRefName
+              headRefName
               merged
               closed
               isDraft
@@ -118,6 +123,8 @@ export default {
     return {
       identifier: { owner, name, number },
       title: raw.title,
+      baseRefName: raw.baseRefName,
+      headRefName: raw.headRefName,
       status: (() => {
         if (raw.merged) return "merged";
         if (raw.drafted) return "draft";

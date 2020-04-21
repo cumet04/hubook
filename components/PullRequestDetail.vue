@@ -1,8 +1,13 @@
 <template>
   <div>
     <v-subheader>
-      {{ this.subject.author.login }} opened this issue at
-      {{ this.subject.publishedAt }}
+      <span>
+        <b>{{ subject.author.login }}</b>
+        {{ subject.status == "merged" ? "merged" : "wants to merge" }} into
+        <code>{{ subject.baseRefName }}</code> from
+        <code>{{ subject.headRefName }}</code>
+        {{ formatDate(subject.publishedAt) }}
+      </span>
     </v-subheader>
     <v-list three-line>
       <template v-for="(comment, i) in comments">
@@ -12,10 +17,10 @@
             <v-img :src="comment.author.avatarUrl"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-subtitle
-              >{{ comment.author.login }} commented at
-              {{ comment.publishedAt }}</v-list-item-subtitle
-            >
+            <v-list-item-subtitle>
+              <b>{{ subject.author.login }}</b> commented at
+              {{ formatDate(comment.publishedAt) }}
+            </v-list-item-subtitle>
             <v-list-item-content>
               {{ comment.bodyText }}
             </v-list-item-content>
@@ -29,6 +34,11 @@
 <script>
 export default {
   props: ["subject"],
+  methods: {
+    formatDate(date) {
+      return date.toUTCString();
+    },
+  },
   computed: {
     comments() {
       const { author, bodyText, publishedAt } = this.subject;
