@@ -5,32 +5,31 @@ export const state = () => ({
   _all: {},
 });
 
-function key(owner, name, number) {
-  return `${owner}/${name}/${number}`;
+function key(id) {
+  return `${id.owner}/${id.name}/${id.number}`;
 }
 
 export const mutations = {
   insert(state, value) {
-    const repo = value.repository;
-    const k = key(repo.owner, repo.name, value.number);
-    Vue.set(state._all, k, value);
+    Vue.set(state._all, key(value.identifier), value);
   },
 };
 
 export const getters = {
-  find: (state) => (owner, name, number) => {
-    return state._all[key(owner, name, number)];
+  find: (state) => (identifier) => {
+    return state._all[key(identifier)];
   },
 };
 
 export const actions = {
-  async fetch({ commit, getters }, { owner, name, number, force = false }) {
+  async fetch({ commit, getters }, { identifier, force = false }) {
     if (!force) {
-      const cache = getters.find(owner, name, number);
+      console.log(identifier);
+      const cache = getters.find(identifier);
       if (cache) return cache;
     }
-    const data = await github.fetchIssue({ owner, name, number });
+    const data = await github.fetchIssue(identifier);
     commit("insert", data);
-    return getters.find(owner, name, number);
+    return getters.find(identifier);
   },
 };

@@ -30,20 +30,6 @@ export const getters = {
 export const actions = {
   async fetchNotifications({ commit }) {
     const { notifications, interval } = await github.listNotifications();
-    await Promise.all(
-      notifications.map(async (n) => {
-        const info = {
-          owner: n.repository.owner,
-          name: n.repository.name,
-          number: n.number,
-        };
-        if (n.type == "Issue") {
-          n.summary = await github.fetchIssueSummary(info);
-        } else if (n.type == "PullRequest") {
-          n.summary = await github.fetchPullRequest(info);
-        }
-      })
-    );
     commit("upsertMulti", notifications);
     commit("setNextUpdate", new Date(Date.now() + interval * 1000));
   },

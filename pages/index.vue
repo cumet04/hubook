@@ -62,20 +62,19 @@ export default {
       return this.selected?.type;
     },
     detailOpen() {
-      if (this.selectedType == "Issue") {
-        const s = this.selected;
-        this.$store
-          .dispatch("issues/fetch", {
-            owner: s.repository.owner,
-            name: s.repository.name,
-            number: s.number,
-          })
-          .then((data) => {
-            this.selectedSubject = data;
-          });
-      } // else if
-
       return this.selectedIndex != null;
+    },
+  },
+  watch: {
+    selectedIndex(newValue, oldValue) {
+      if (newValue == null) return;
+
+      const identifier = this.selected.subjectIdentifier;
+      if (this.selectedType == "Issue") {
+        this.$store.dispatch("issues/fetch", { identifier }).then((data) => {
+          this.selectedSubject = data;
+        });
+      } // else if
     },
   },
 };

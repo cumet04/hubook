@@ -55,11 +55,10 @@ export default {
           lastReadAt: parseDate(raw.last_read_at),
           title: raw.subject.title,
           type: raw.subject.type,
-          summary: {},
-          number: parseInt(raw.subject.url.split("/").pop()), // TODO: fix hack
-          repository: {
+          subjectIdentifier: {
             owner: raw.repository.owner.login, // TODO: org?
             name: raw.repository.name,
+            number: parseInt(raw.subject.url.split("/").pop()), // TODO: fix hack
           },
         };
       }),
@@ -85,36 +84,12 @@ export default {
     ).repository.pullRequest;
 
     return {
-      repository: { owner, name },
-      number: raw.number,
+      identifier: { owner, name, number },
       title: raw.title,
-      merged: raw.merged,
+      merged: raw.merged, // TODO: to status string
       closed: raw.closed,
       drafted: raw.isDraft,
-      createdAt: parseDate(raw.createdAt),
-      updatedAt: parseDate(raw.updatedAt),
-    };
-  },
-  async fetchIssueSummary({ owner, name, number }) {
-    const raw = (
-      await qlClient().request(`
-        query {
-          repository(owner: "${owner}", name: "${name}") {
-            issue(number: ${number}) {
-              number
-              title
-              closed
-            }
-          }
-        }
-      `)
-    ).repository.issue;
-
-    return {
-      repository: { owner, name },
-      number: raw.number,
-      title: raw.title,
-      closed: raw.closed,
+      // TODO: detail
     };
   },
   async fetchIssue({ owner, name, number }) {
@@ -153,11 +128,9 @@ export default {
       `)
     ).repository.issue;
 
-    // FIXME: app usable data structure
     const page = raw.comments.pageInfo;
     return {
-      repository: { owner, name },
-      number: raw.number,
+      identifier: { owner, name, number },
       title: raw.title,
       closed: raw.closed,
       author: raw.author,

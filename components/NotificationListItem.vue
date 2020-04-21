@@ -18,29 +18,42 @@ import { mdiSourcePull } from "@mdi/js";
 
 export default {
   props: ["notification"],
+  data: () => ({ subject: null }),
+  mounted() {
+    const identifier = this.notification.subjectIdentifier;
+    if (this.notification.type == "Issue") {
+      this.$store.dispatch("issues/fetch", { identifier }).then((data) => {
+        this.subject = data;
+      });
+    } // else if
+  },
   computed: {
     iconColor() {
-      const n = this.notification;
-      if (n.type == "Issue") {
-        return n.summary.closed ? "red" : "green";
-      } else if (n.type == "PullRequest") {
-        if (n.summary.drafted) return "gray";
-        else if (n.summary.merged) return "purple";
-        else if (n.summary.closed) return "red";
+      const s = this.subject;
+      if (!s) return "";
+
+      if (this.notification.type == "Issue") {
+        return s.closed ? "red" : "green";
+      } else if (this.notification.type == "PullRequest") {
+        if (s.drafted) return "gray";
+        else if (s.merged) return "purple";
+        else if (s.closed) return "red";
         else return "green";
       }
     },
     iconData() {
-      const n = this.notification;
-      if (n.type == "Issue") {
+      const s = this.subject;
+      if (!s) return "";
+
+      if (this.notification.type == "Issue") {
         return "mdi-alert-circle-outline";
-      } else if (n.type == "PullRequest") {
-        return n.summary.merged ? mdiSourceMerge : mdiSourcePull;
+      } else if (this.notification.type == "PullRequest") {
+        return s.merged ? mdiSourceMerge : mdiSourcePull;
       }
     },
     subtitle() {
-      const n = this.notification;
-      return `${n.repository.owner}/${n.repository.name} #${n.number}`;
+      const id = this.notification.subjectIdentifier;
+      return `${id.owner}/${id.name} #${id.number}`;
     },
   },
 };
