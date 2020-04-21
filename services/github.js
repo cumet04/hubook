@@ -94,6 +94,7 @@ export default {
     };
   },
   async fetchPullRequest({ owner, name, number }) {
+    const per = 5;
     const raw = (
       await qlClient().request(`
         query {
@@ -104,8 +105,10 @@ export default {
               merged
               closed
               isDraft
-              createdAt
-              updatedAt
+              publishedAt
+              ${authorQuery()}
+              bodyText
+              ${commentsQuery(per)}
             }
           }
         }
@@ -118,7 +121,10 @@ export default {
       merged: raw.merged, // TODO: to status string
       closed: raw.closed,
       drafted: raw.isDraft,
-      // TODO: detail
+      author: raw.author,
+      bodyText: raw.bodyText,
+      publishedAt: parseDate(raw.publishedAt),
+      ...mapCommentsData(raw),
     };
   },
   async fetchIssue({ owner, name, number }) {

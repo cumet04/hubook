@@ -25,7 +25,11 @@ export default {
       this.$store.dispatch("issues/fetch", { identifier }).then((data) => {
         this.subject = data;
       });
-    } // else if
+    } else if (this.notification.type == "PullRequest") {
+      this.$store.dispatch("pullreqs/fetch", { identifier }).then((data) => {
+        this.subject = data;
+      });
+    }
   },
   computed: {
     iconColor() {

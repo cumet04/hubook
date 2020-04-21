@@ -21,10 +21,10 @@
             v-if="selectedType == 'Issue' && selectedSubject"
             :subject="selectedSubject"
           ></issue-detail>
-          <!-- <pullrequest-detail
-            v-if="selectedType == 'PullRequest'"
-            :subject="selected.subject"
-          ></pullrequest-detail> -->
+          <pullrequest-detail
+            v-if="selectedType == 'PullRequest' && selectedSubject"
+            :subject="selectedSubject"
+          ></pullrequest-detail>
         </v-card>
       </div>
     </v-expand-x-transition>
@@ -74,7 +74,11 @@ export default {
         this.$store.dispatch("issues/fetch", { identifier }).then((data) => {
           this.selectedSubject = data;
         });
-      } // else if
+      } else if (this.selectedType == "PullRequest") {
+        this.$store.dispatch("pullreqs/fetch", { identifier }).then((data) => {
+          this.selectedSubject = data;
+        });
+      }
     },
   },
 };
