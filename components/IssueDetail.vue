@@ -1,12 +1,13 @@
 <template>
   <div>
-    <v-card-subtitle>
+    <v-subheader>
       {{ this.subject.author.login }} opened this issue at
       {{ this.subject.publishedAt }}
-    </v-card-subtitle>
+    </v-subheader>
     <v-list three-line>
-      <v-card v-for="comment in comments" :key="comment.id">
-        <v-list-item>
+      <template v-for="(comment, i) in comments">
+        <v-divider :key="comment.id" v-if="i != 0"></v-divider>
+        <v-list-item :key="comment.id">
           <v-list-item-avatar>
             <v-img :src="comment.author.avatarUrl"></v-img>
           </v-list-item-avatar>
@@ -20,7 +21,7 @@
             </v-list-item-content>
           </v-list-item-content>
         </v-list-item>
-      </v-card>
+      </template>
     </v-list>
   </div>
 </template>
