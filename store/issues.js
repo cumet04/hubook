@@ -1,4 +1,4 @@
-import github from "~/plugins/github";
+import github from "~/services/github";
 import Vue from "vue";
 
 export const state = () => ({

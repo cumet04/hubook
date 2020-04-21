@@ -1,17 +1,19 @@
 import GitHub from "github-api";
 import { GraphQLClient } from "graphql-request";
 
+const store = () => $nuxt.$store;
+
 function gh() {
   const res = new GitHub({
-    apiBase: $nuxt.$store.getters["settings/githubApiBase"], // TODO: for ghe
-    token: $nuxt.$store.state.settings.githubApiToken,
+    apiBase: store().getters["settings/githubApiBase"], // TODO: for ghe
+    token: store().state.settings.githubApiToken,
   });
   return res;
 }
 
 function qlClient() {
-  const endpoint = `${$nuxt.$store.getters["settings/githubApiBase"]}graphql`;
-  const token = $nuxt.$store.state.settings.githubApiToken;
+  const endpoint = `${store().getters["settings/githubApiBase"]}graphql`;
+  const token = store().state.settings.githubApiToken;
   return new GraphQLClient(endpoint, {
     headers: {
       authorization: `Bearer ${token}`,

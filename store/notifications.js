@@ -1,4 +1,4 @@
-import github from "~/plugins/github";
+import github from "~/services/github";
 
 export const state = () => ({
   _all: {},
