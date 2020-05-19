@@ -11,15 +11,15 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@mdi/js": "^5.0.45",
+    "@mdi/js": "^5.2.45",
     "@nuxtjs/pwa": "^3.0.0-0",
-    "@nuxtjs/vuetify": "^1.0.0",
+    "@nuxtjs/vuetify": "^1.11.2",
     "github-api": "^3.3.0",
     "graphql-request": "^1.8.2",
-    "nuxt": "^2.0.0",
+    "nuxt": "^2.12.2",
     "vuex-persistedstate": "^3.0.1"
   },
   "devDependencies": {
-    "prettier": "^2.0.0"
+    "prettier": "^2.0.5"
   }
 }
