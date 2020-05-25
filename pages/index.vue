@@ -14,7 +14,7 @@
     </v-list>
     <v-divider vertical class="mx-4" v-if="selected"></v-divider>
     <v-expand-x-transition>
-      <!-- for transition, separate v-show and min-width -->
+      <!-- for transition, separate block with v-if and block with min-width -->
       <div v-if="selected">
         <v-card elevation="0" style="min-width: 500px;">
           <issue-detail
