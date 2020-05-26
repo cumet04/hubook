@@ -1,11 +1,8 @@
 import { Octokit } from "@octokit/rest";
 import { GraphQLClient } from "graphql-request";
-import { NuxtApp } from "@nuxt/types/app";
 import { Repository, IssueCommentConnection } from "~/types/github-v4";
 
-// FIXME:
-// @ts-ignore TS2304; Cannot find name '$nuxt'.
-const store = () => ($nuxt as NuxtApp).$store;
+const store = () => window.$nuxt.$store;
 
 function octokit() {
   const res = new Octokit({
