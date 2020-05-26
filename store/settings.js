@@ -13,7 +13,9 @@ export const mutations = {
       state.githubApiBase = null;
     } else {
       // (ghe) normalize trailing slash
-      state.githubApiBase = value.endsWith("/") ? value : `${value}/`;
+      state.githubApiBase = value.endsWith("/")
+        ? value.substring(0, valie.length - 1)
+        : value;
     }
   },
   setGithubApiToken(state, value) {
@@ -23,7 +25,7 @@ export const mutations = {
 
 export const getters = {
   githubApiBase(state) {
-    return state.githubApiBase || "https://api.github.com/";
+    return state.githubApiBase || "https://api.github.com";
   },
 };
 

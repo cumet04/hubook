@@ -1,4 +1,4 @@
-const GitHub = require("github-api"); // avoid ts error without d.ts
+import { Octokit } from "@octokit/rest";
 import { GraphQLClient } from "graphql-request";
 import { NuxtApp } from "@nuxt/types/app";
 import { Repository, IssueCommentConnection } from "~/types/github-v4";
@@ -7,16 +7,16 @@ import { Repository, IssueCommentConnection } from "~/types/github-v4";
 // @ts-ignore TS2304; Cannot find name '$nuxt'.
 const store = () => ($nuxt as NuxtApp).$store;
 
-function gh() {
-  const res = new GitHub({
-    apiBase: store().getters["settings/githubApiBase"], // TODO: for ghe
-    token: store().state.settings.githubApiToken,
+function octokit() {
+  const res = new Octokit({
+    auth: store().state.settings.githubApiToken,
+    baseUrl: store().getters["settings/githubApiBase"], // TODO: for ghe
   });
   return res;
 }
 
 function qlClient() {
-  const endpoint = `${store().getters["settings/githubApiBase"]}graphql`;
+  const endpoint = `${store().getters["settings/githubApiBase"]}/graphql`;
   const token = store().state.settings.githubApiToken;
   return new GraphQLClient(endpoint, {
     headers: {
@@ -77,13 +77,11 @@ function mapCommentsData(comments: IssueCommentConnection) {
 export default {
   async listNotifications(since = null) {
     const op = since ? { since } : {};
-    const res = await gh().getUser().listNotifications(op);
+    const res = await octokit().activity.listNotificationsForAuthenticatedUser();
     if (res.status != 200) raise(res, "get notifications failed");
 
     return {
       interval: res.headers["x-poll-interval"],
-      // FIXME: type
-      // @ts-ignore TS7006
       notifications: res.data.map((raw) => {
         // MEMO: This application supposes that subject type is issue or pull-req.
         // I don't know the type can be except these...
@@ -101,7 +99,7 @@ export default {
           subjectIdentifier: {
             owner: raw.repository.owner.login, // TODO: org?
             name: raw.repository.name,
-            number: parseInt(raw.subject.url.split("/").pop()), // TODO: fix hack
+            number: parseInt(raw.subject.url.split("/").pop() || ""), // TODO: fix hack
           },
         };
       }),
