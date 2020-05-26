@@ -36,6 +36,8 @@ import NotificationListItem from "~/components/NotificationListItem.vue";
 import IssueDetail from "~/components/IssueDetail.vue";
 import PullRequestDetail from "~/components/PullRequestDetail.vue";
 
+import Notification from "~/services/notification";
+
 export default {
   components: {
     "notification-list-item": NotificationListItem,
@@ -48,12 +50,12 @@ export default {
   }),
   mounted() {
     setTimeout(() => {
-      this.$store.dispatch("notifications/fetchNotifications");
+      Notification.fetch();
     }, 0); // TODO: tmp hack
   },
   computed: {
     notifications() {
-      return this.$store.getters["notifications/index"](5);
+      return Notification.list();
     },
     selected() {
       return this.notifications[this.selectedIndex];

@@ -1,16 +1,7 @@
-import { Octokit } from "@octokit/rest";
 import { GraphQLClient } from "graphql-request";
 import { Repository, IssueCommentConnection } from "~/types/github-v4";
 
 const store = () => window.$nuxt.$store;
-
-function octokit() {
-  const res = new Octokit({
-    auth: store().state.settings.githubApiToken,
-    baseUrl: store().getters["settings/githubApiBase"], // TODO: for ghe
-  });
-  return res;
-}
 
 function qlClient() {
   const endpoint = `${store().getters["settings/githubApiBase"]}/graphql`;
@@ -20,14 +11,6 @@ function qlClient() {
       authorization: `Bearer ${token}`,
     },
   });
-}
-
-function raise(res: any, msg: string) {
-  console.group();
-  console.error(msg);
-  console.debug(res);
-  console.groupEnd();
-  throw msg;
 }
 
 function parseDate(datestr: string) {
@@ -72,36 +55,6 @@ function mapCommentsData(comments: IssueCommentConnection) {
 }
 
 export default {
-  async listNotifications(since = null) {
-    const op = since ? { since } : {};
-    const res = await octokit().activity.listNotificationsForAuthenticatedUser();
-    if (res.status != 200) raise(res, "get notifications failed");
-
-    return {
-      interval: res.headers["x-poll-interval"],
-      notifications: res.data.map((raw) => {
-        // MEMO: This application supposes that subject type is issue or pull-req.
-        // I don't know the type can be except these...
-        const type = raw.subject.type;
-        if (type != "Issue" && type != "PullRequest") {
-          raise(raw, "subject type is not issue nor pull-req");
-        }
-
-        return {
-          id: raw.id,
-          updatedAt: parseDate(raw.updated_at),
-          lastReadAt: parseDate(raw.last_read_at),
-          title: raw.subject.title,
-          type: raw.subject.type,
-          subjectIdentifier: {
-            owner: raw.repository.owner.login, // TODO: org?
-            name: raw.repository.name,
-            number: parseInt(raw.subject.url.split("/").pop() || ""), // TODO: fix hack
-          },
-        };
-      }),
-    };
-  },
   async fetchPullRequest({
     owner,
     name,
@@ -134,8 +87,8 @@ export default {
       `)
     ).repository.pullRequest;
     if (!raw) {
-      raise(raw, "request pullrequest failed");
-      return;
+      console.debug(raw);
+      throw Error("request pullrequest failed");
     }
 
     return {
@@ -183,8 +136,8 @@ export default {
       `)
     ).repository.issue;
     if (!raw) {
-      raise(raw, "request issue failed");
-      return;
+      console.debug(raw);
+      throw Error("request issue failed");
     }
 
     return {
