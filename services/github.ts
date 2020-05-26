@@ -1,7 +1,11 @@
-import GitHub from "github-api";
+const GitHub = require("github-api"); // avoid ts error without d.ts
 import { GraphQLClient } from "graphql-request";
+import { NuxtApp } from "@nuxt/types/app";
+import { Repository, IssueCommentConnection } from "~/types/github-v4";
 
-const store = () => $nuxt.$store;
+// FIXME:
+// @ts-ignore TS2304; Cannot find name '$nuxt'.
+const store = () => ($nuxt as NuxtApp).$store;
 
 function gh() {
   const res = new GitHub({
@@ -21,7 +25,7 @@ function qlClient() {
   });
 }
 
-function raise(res, msg) {
+function raise(res: any, msg: string) {
   console.group();
   console.error(msg);
   console.debug(res);
@@ -29,7 +33,7 @@ function raise(res, msg) {
   throw msg;
 }
 
-function parseDate(datestr) {
+function parseDate(datestr: string) {
   return new Date(Date.parse(datestr));
 }
 
@@ -40,7 +44,7 @@ author {
 }
 `;
 
-const commentsQuery = (per) => `
+const commentsQuery = (per: number) => `
 comments(first: ${per}) {
   nodes {
     ${authorQuery()}
@@ -54,10 +58,15 @@ comments(first: ${per}) {
 }
 `;
 
-function mapCommentsData(data) {
-  const page = data.comments.pageInfo;
+interface TQueryResult {
+  repository: Repository;
+}
+
+function mapCommentsData(comments: IssueCommentConnection) {
+  const page = comments.pageInfo;
   return {
-    comments: data.comments.nodes.map((raw) => {
+    comments: comments.nodes?.map((raw) => {
+      if (!raw) return null;
       raw.publishedAt = parseDate(raw.publishedAt);
       return raw;
     }),
@@ -73,6 +82,8 @@ export default {
 
     return {
       interval: res.headers["x-poll-interval"],
+      // FIXME: type
+      // @ts-ignore TS7006
       notifications: res.data.map((raw) => {
         // MEMO: This application supposes that subject type is issue or pull-req.
         // I don't know the type can be except these...
@@ -96,10 +107,18 @@ export default {
       }),
     };
   },
-  async fetchPullRequest({ owner, name, number }) {
+  async fetchPullRequest({
+    owner,
+    name,
+    number,
+  }: {
+    owner: string;
+    name: string;
+    number: string;
+  }) {
     const per = 5;
     const raw = (
-      await qlClient().request(`
+      await qlClient().request<TQueryResult>(`
         query {
           repository(owner: "${owner}", name: "${name}") {
             pullRequest(number: ${number}) {
@@ -119,6 +138,10 @@ export default {
         }
       `)
     ).repository.pullRequest;
+    if (!raw) {
+      raise(raw, "request pullrequest failed");
+      return;
+    }
 
     return {
       identifier: { owner, name, number },
@@ -127,20 +150,28 @@ export default {
       headRefName: raw.headRefName,
       status: (() => {
         if (raw.merged) return "merged";
-        if (raw.drafted) return "draft";
+        if (raw.isDraft) return "draft";
         if (raw.closed) return "closed";
         return "open";
       })(),
       author: raw.author,
       bodyText: raw.bodyText,
       publishedAt: parseDate(raw.publishedAt),
-      ...mapCommentsData(raw),
+      ...mapCommentsData(raw.comments),
     };
   },
-  async fetchIssue({ owner, name, number }) {
+  async fetchIssue({
+    owner,
+    name,
+    number,
+  }: {
+    owner: string;
+    name: string;
+    number: string;
+  }) {
     const per = 5;
     const raw = (
-      await qlClient().request(`
+      await qlClient().request<TQueryResult>(`
         query {
           repository(owner: "${owner}", name: "${name}") {
             issue(number: ${number}) {
@@ -156,6 +187,10 @@ export default {
         }
       `)
     ).repository.issue;
+    if (!raw) {
+      raise(raw, "request issue failed");
+      return;
+    }
 
     return {
       identifier: { owner, name, number },
@@ -164,7 +199,7 @@ export default {
       author: raw.author,
       bodyText: raw.bodyText,
       publishedAt: parseDate(raw.publishedAt),
-      ...mapCommentsData(raw),
+      ...mapCommentsData(raw.comments),
     };
   },
 };
