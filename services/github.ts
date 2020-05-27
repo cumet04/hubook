@@ -1,14 +1,12 @@
 import { GraphQLClient } from "graphql-request";
 import { Repository, IssueCommentConnection } from "~/types/github-v4";
-
-const store = () => window.$nuxt.$store;
+import Setting from "~/services/setting";
 
 function qlClient() {
-  const endpoint = `${store().getters["settings/githubApiBase"]}/graphql`;
-  const token = store().state.settings.githubApiToken;
-  return new GraphQLClient(endpoint, {
+  const params = Setting.githubAuth();
+  return new GraphQLClient(`${params.baseUrl}/graphql`, {
     headers: {
-      authorization: `Bearer ${token}`,
+      authorization: `Bearer ${params.token}`,
     },
   });
 }

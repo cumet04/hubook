@@ -1,11 +1,14 @@
 import { Octokit } from "@octokit/rest";
+import Setting from "~/services/setting";
 
 const store = () => window.$nuxt.$store;
 
 function octokit() {
+  const params = Setting.githubAuth();
+  console.log(params.token);
   const res = new Octokit({
-    auth: store().state.settings.githubApiToken,
-    baseUrl: store().getters["settings/githubApiBase"], // TODO: for ghe
+    baseUrl: params.baseUrl,
+    auth: params.token,
   });
   return res;
 }
