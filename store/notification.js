@@ -1,5 +1,3 @@
-import github from "~/services/pullRequest";
-
 export const state = () => ({
   _all: {},
   _nextUpdate: null,
@@ -24,13 +22,5 @@ export const getters = {
     return getters.all
       .sort((a, b) => b.lastReadAt - a.lastReadAt)
       .slice(start, end);
-  },
-};
-
-export const actions = {
-  async fetchNotifications({ commit }) {
-    const { notifications, interval } = await github.listNotifications();
-    commit("upsertMulti", notifications);
-    commit("setNextUpdate", new Date(Date.now() + interval * 1000));
   },
 };
