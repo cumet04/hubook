@@ -37,6 +37,7 @@ import IssueDetail from "~/components/IssueDetail.vue";
 import PullRequestDetail from "~/components/PullRequestDetail.vue";
 
 import Notification from "~/services/notification";
+import Issue from "~/services/issue";
 
 export default {
   components: {
@@ -70,7 +71,7 @@ export default {
 
       const identifier = this.selected.subjectIdentifier;
       if (this.selectedType == "Issue") {
-        this.$store.dispatch("issues/fetch", { identifier }).then((data) => {
+        Issue.fetch({ identifier }).then((data) => {
           this.selectedSubject = data;
         });
       } else if (this.selectedType == "PullRequest") {

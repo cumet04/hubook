@@ -106,46 +106,4 @@ export default {
       ...mapCommentsData(raw.comments),
     };
   },
-  async fetchIssue({
-    owner,
-    name,
-    number,
-  }: {
-    owner: string;
-    name: string;
-    number: string;
-  }) {
-    const per = 5;
-    const raw = (
-      await qlClient().request<TQueryResult>(`
-        query {
-          repository(owner: "${owner}", name: "${name}") {
-            issue(number: ${number}) {
-              number
-              title
-              closed
-              publishedAt
-              ${authorQuery()}
-              bodyText
-              ${commentsQuery(per)}
-            }
-          }
-        }
-      `)
-    ).repository.issue;
-    if (!raw) {
-      console.debug(raw);
-      throw Error("request issue failed");
-    }
-
-    return {
-      identifier: { owner, name, number },
-      title: raw.title,
-      status: raw.closed ? "closed" : "open",
-      author: raw.author,
-      bodyText: raw.bodyText,
-      publishedAt: parseDate(raw.publishedAt),
-      ...mapCommentsData(raw.comments),
-    };
-  },
 };

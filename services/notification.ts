@@ -5,7 +5,6 @@ const store = () => window.$nuxt.$store;
 
 function octokit() {
   const params = Setting.githubAuth();
-  console.log(params.token);
   const res = new Octokit({
     baseUrl: params.baseUrl,
     auth: params.token,
