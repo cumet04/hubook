@@ -46,10 +46,11 @@ export default {
     change(event) {
       if (event) {
         // initialize data on open
+        const auth = Setting.githubAuth();
         Object.assign(this.$data, {
           snackbar: false,
-          githubApiBase: this.$store.state.setting.githubApiBase,
-          githubApiToken: this.$store.state.setting.githubApiToken,
+          githubApiBase: auth.baseUrl,
+          githubApiToken: auth.token,
         });
       }
       this.$emit("input", event);
