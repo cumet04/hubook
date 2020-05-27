@@ -11,10 +11,12 @@ import {
 
 const store = () => window.$nuxt.$store;
 
-type Issue = {
+type PullRequest = {
   identifier: Identifier;
   title: string;
-  status: "open" | "closed";
+  baseRefName: string;
+  headRefName: string;
+  status: "open" | "draft" | "merged" | "closed";
   author: Actor;
   bodyText: string;
   publishedAt: Date;
@@ -22,16 +24,24 @@ type Issue = {
   nextCommentCursor: string | null;
 };
 
-async function fetchIssue({ owner, name, number }: Identifier): Promise<Issue> {
+async function fetchPullRequest({
+  owner,
+  name,
+  number,
+}: Identifier): Promise<PullRequest> {
   const per = 5;
   const raw = (
     await qlClient().request<TQueryResult>(`
         query {
           repository(owner: "${owner}", name: "${name}") {
-            issue(number: ${number}) {
+            pullRequest(number: ${number}) {
               number
               title
+              baseRefName
+              headRefName
+              merged
               closed
+              isDraft
               publishedAt
               ${authorQuery()}
               bodyText
@@ -40,10 +50,10 @@ async function fetchIssue({ owner, name, number }: Identifier): Promise<Issue> {
           }
         }
       `)
-  ).repository.issue;
+  ).repository.pullRequest;
   if (!raw) {
     console.debug(raw);
-    throw Error("request issue failed");
+    throw Error("request pullrequest failed");
   }
   if (!raw.author) {
     console.debug(raw);
@@ -53,7 +63,14 @@ async function fetchIssue({ owner, name, number }: Identifier): Promise<Issue> {
   return {
     identifier: { owner, name, number },
     title: raw.title,
-    status: raw.closed ? "closed" : "open",
+    baseRefName: raw.baseRefName,
+    headRefName: raw.headRefName,
+    status: (() => {
+      if (raw.merged) return "merged";
+      if (raw.isDraft) return "draft";
+      if (raw.closed) return "closed";
+      return "open";
+    })(),
     author: raw.author,
     bodyText: raw.bodyText,
     publishedAt: parseDate(raw.publishedAt),
@@ -70,11 +87,11 @@ export default {
     force: boolean;
   }) {
     if (!force) {
-      const cache = store().getters["issue/find"](identifier);
+      const cache = store().getters["pullRequest/find"](identifier);
       if (cache) return cache;
     }
-    const data = await fetchIssue(identifier);
-    store().commit("issue/insert", data);
-    return store().getters["issue/find"](identifier);
+    const data = await fetchPullRequest(identifier);
+    store().commit("pullRequest/insert", data);
+    return store().getters["pullRequest/find"](identifier);
   },
 };

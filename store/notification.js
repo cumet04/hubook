@@ -1,4 +1,4 @@
-import github from "~/services/github";
+import github from "~/services/pullRequest";
 
 export const state = () => ({
   _all: {},
