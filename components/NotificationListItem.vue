@@ -15,6 +15,8 @@
 <script>
 import { mdiSourceMerge } from "@mdi/js";
 import { mdiSourcePull } from "@mdi/js";
+import Issue from "~/services/issue";
+import PullRequest from "~/services/pullRequest";
 
 export default {
   props: ["notification"],
@@ -22,11 +24,11 @@ export default {
   mounted() {
     const identifier = this.notification.subjectIdentifier;
     if (this.notification.type == "Issue") {
-      this.$store.dispatch("issues/fetch", { identifier }).then((data) => {
+      Issue.fetch({ identifier }).then((data) => {
         this.subject = data;
       });
     } else if (this.notification.type == "PullRequest") {
-      this.$store.dispatch("pullreqs/fetch", { identifier }).then((data) => {
+      PullRequest.fetch({ identifier }).then((data) => {
         this.subject = data;
       });
     }

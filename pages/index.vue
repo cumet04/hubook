@@ -14,7 +14,7 @@
     </v-list>
     <v-divider vertical class="mx-4" v-if="selected"></v-divider>
     <v-expand-x-transition>
-      <!-- for transition, separate v-show and min-width -->
+      <!-- for transition, separate block with v-if and block with min-width -->
       <div v-if="selected">
         <v-card elevation="0" style="min-width: 500px;">
           <issue-detail
@@ -36,6 +36,10 @@ import NotificationListItem from "~/components/NotificationListItem.vue";
 import IssueDetail from "~/components/IssueDetail.vue";
 import PullRequestDetail from "~/components/PullRequestDetail.vue";
 
+import Notification from "~/services/notification";
+import Issue from "~/services/issue";
+import PullRequest from "~/services/pullRequest";
+
 export default {
   components: {
     "notification-list-item": NotificationListItem,
@@ -48,12 +52,12 @@ export default {
   }),
   mounted() {
     setTimeout(() => {
-      this.$store.dispatch("notifications/fetchNotifications");
+      Notification.fetch();
     }, 0); // TODO: tmp hack
   },
   computed: {
     notifications() {
-      return this.$store.getters["notifications/index"](5);
+      return Notification.list();
     },
     selected() {
       return this.notifications[this.selectedIndex];
@@ -68,11 +72,11 @@ export default {
 
       const identifier = this.selected.subjectIdentifier;
       if (this.selectedType == "Issue") {
-        this.$store.dispatch("issues/fetch", { identifier }).then((data) => {
+        Issue.fetch({ identifier }).then((data) => {
           this.selectedSubject = data;
         });
       } else if (this.selectedType == "PullRequest") {
-        this.$store.dispatch("pullreqs/fetch", { identifier }).then((data) => {
+        PullRequest.fetch({ identifier }).then((data) => {
           this.selectedSubject = data;
         });
       }

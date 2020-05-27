@@ -1,0 +1,6 @@
+overwrite: true
+schema: ./bin/schema.public.graphql
+generates:
+  ./types/github-v4.d.ts:
+    plugins:
+      - "typescript"

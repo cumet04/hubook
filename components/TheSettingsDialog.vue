@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import Setting from "~/services/setting";
+
 export default {
   props: ["value"],
   data: () => ({
@@ -44,19 +46,20 @@ export default {
     change(event) {
       if (event) {
         // initialize data on open
+        const auth = Setting.githubAuth();
         Object.assign(this.$data, {
           snackbar: false,
-          githubApiBase: this.$store.state.settings.githubApiBase,
-          githubApiToken: this.$store.state.settings.githubApiToken,
+          githubApiBase: auth.baseUrl,
+          githubApiToken: auth.token,
         });
       }
       this.$emit("input", event);
     },
     save() {
-      this.$store.dispatch("settings/setGithubApiParams", {
-        base: this.githubApiBase,
-        token: this.githubApiToken,
-      });
+      Setting.setGithubAuth(
+        this.githubApiBase || "",
+        this.githubApiToken || ""
+      );
       this.snackbar = true;
     },
   },

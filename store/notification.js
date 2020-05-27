@@ -1,4 +1,4 @@
-import github from "~/services/github";
+import github from "~/services/pullRequest";
 
 export const state = () => ({
   _all: {},
@@ -20,10 +20,10 @@ export const mutations = {
 
 export const getters = {
   all: (state) => Object.values(state._all),
-  index: (_, getters) => (limit) => {
+  list: (_, getters) => (start, end) => {
     return getters.all
       .sort((a, b) => b.lastReadAt - a.lastReadAt)
-      .slice(0, limit);
+      .slice(start, end);
   },
 };
 

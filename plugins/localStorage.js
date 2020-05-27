@@ -4,7 +4,7 @@ export default ({ store }) => {
   window.onNuxtReady(() => {
     createPersistedState({
       key: "vuex-hubook",
-      paths: ["settings"],
+      paths: ["setting"],
     })(store);
   });
 };
