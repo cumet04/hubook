@@ -19,13 +19,24 @@ export default {
     doc.body.style.margin = "0"; // make inner.body.offsetHeight equal to content height
     doc.body.style.height = "fit-content"; // 明示的に指定しない場合、縦長のcommentを表示 -> 短いのを表示
     // した場合に直前のiframeのheightに引っ張られて大きいままになる
+
+    const handler = () => {
+      // wait for re-render content
+      setTimeout(() => {
+        this.height = this.$el.contentDocument.body.offsetHeight;
+      }, 0);
+    };
+    // fit height when click <details> tag
+    this.$el.contentWindow.addEventListener("click", handler);
+    // fit height when window resized and line-break changed
+    this.$el.contentWindow.addEventListener("resize", handler);
+
     this.updateContent();
   },
   methods: {
     updateContent() {
-      const doc = this.$el.contentDocument;
-      doc.body.innerHTML = this.content;
-      this.height = doc.body.offsetHeight;
+      this.$el.contentDocument.body.innerHTML = this.content;
+      this.height = this.$el.contentDocument.body.offsetHeight;
     },
   },
   watch: {
