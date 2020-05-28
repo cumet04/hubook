@@ -16,7 +16,7 @@ type Issue = {
   title: string;
   status: "open" | "closed";
   author: Actor;
-  bodyText: string;
+  body: string;
   publishedAt: Date;
   comments: IssueComment[];
   nextCommentCursor: string | null;
@@ -34,7 +34,7 @@ async function fetchIssue({ owner, name, number }: Identifier): Promise<Issue> {
               closed
               publishedAt
               ${authorQuery()}
-              bodyText
+              bodyHTML
               ${commentsQuery(per)}
             }
           }
@@ -55,7 +55,7 @@ async function fetchIssue({ owner, name, number }: Identifier): Promise<Issue> {
     title: raw.title,
     status: raw.closed ? "closed" : "open",
     author: raw.author,
-    bodyText: raw.bodyText,
+    body: raw.bodyHTML,
     publishedAt: parseDate(raw.publishedAt),
     ...mapCommentsData(raw.comments),
   };

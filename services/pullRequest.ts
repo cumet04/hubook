@@ -18,7 +18,7 @@ type PullRequest = {
   headRefName: string;
   status: "open" | "draft" | "merged" | "closed";
   author: Actor;
-  bodyText: string;
+  body: string;
   publishedAt: Date;
   comments: IssueComment[];
   nextCommentCursor: string | null;
@@ -44,7 +44,7 @@ async function fetchPullRequest({
               isDraft
               publishedAt
               ${authorQuery()}
-              bodyText
+              bodyHTML
               ${commentsQuery(per)}
             }
           }
@@ -72,7 +72,7 @@ async function fetchPullRequest({
       return "open";
     })(),
     author: raw.author,
-    bodyText: raw.bodyText,
+    body: raw.bodyHTML,
     publishedAt: parseDate(raw.publishedAt),
     ...mapCommentsData(raw.comments),
   };

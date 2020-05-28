@@ -22,7 +22,7 @@
               {{ formatDate(comment.publishedAt) }}
             </v-list-item-subtitle>
             <v-list-item-content>
-              {{ comment.bodyText }}
+              <markdown-content :content="comment.body"></markdown-content>
             </v-list-item-content>
           </v-list-item-content>
         </v-list-item>
@@ -32,8 +32,13 @@
 </template>
 
 <script>
+import MarkdownContent from "~/components/MarkdownContent.vue";
+
 export default {
   props: ["subject"],
+  components: {
+    "markdown-content": MarkdownContent,
+  },
   methods: {
     formatDate(date) {
       return date.toUTCString();
@@ -41,8 +46,8 @@ export default {
   },
   computed: {
     comments() {
-      const { author, bodyText, publishedAt } = this.subject;
-      return [{ author, bodyText, publishedAt }, ...this.subject.comments];
+      const { author, body, publishedAt } = this.subject;
+      return [{ author, body, publishedAt }, ...this.subject.comments];
     },
   },
 };
