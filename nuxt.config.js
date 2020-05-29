@@ -16,6 +16,7 @@ export default {
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
+  srcDir: "src/",
   loading: { color: "#fff" },
   css: [],
   plugins: [{ src: "~/plugins/localStorage.js", ssr: false }],

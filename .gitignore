@@ -1,5 +1,5 @@
 node_modules/
 .nuxt
 dist
-static/sw.js
+src/static/sw.js
 bin/schema.public.graphql
