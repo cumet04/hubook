@@ -1,10 +1,6 @@
 import { GraphQLClient } from "graphql-request";
-import {
-  Repository,
-  IssueCommentConnection,
-  IssueComment,
-} from "~/types/github-v4";
-import Setting from "~/services/setting";
+import { Repository, IssueCommentConnection, IssueComment } from "./github-v4";
+import Setting from "./setting";
 
 export interface TQueryResult {
   repository: Repository;

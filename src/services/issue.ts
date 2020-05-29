@@ -1,4 +1,4 @@
-import { IssueComment, Actor } from "~/types/github-v4";
+import { IssueComment, Actor } from "./github-v4";
 import {
   TQueryResult,
   Identifier,
@@ -7,7 +7,7 @@ import {
   qlClient,
   parseDate,
   mapCommentsData,
-} from "~/services/issueUtil";
+} from "./issueUtil";
 
 const store = () => window.$nuxt.$store;
 

@@ -1,5 +1,5 @@
 import { Octokit } from "@octokit/rest";
-import Setting from "~/services/setting";
+import Setting from "./setting";
 
 const store = () => window.$nuxt.$store;
 
