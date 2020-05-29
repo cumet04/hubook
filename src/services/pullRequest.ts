@@ -1,7 +1,8 @@
-import { IssueComment, Actor } from "./github-v4";
 import {
   TQueryResult,
   Identifier,
+  Author,
+  Comment,
   authorQuery,
   commentsQuery,
   qlClient,
@@ -17,10 +18,10 @@ type PullRequest = {
   baseRefName: string;
   headRefName: string;
   status: "open" | "draft" | "merged" | "closed";
-  author: Actor;
+  author: Author;
   body: string;
   publishedAt: Date;
-  comments: IssueComment[];
+  comments: Comment[];
   nextCommentCursor: string | null;
 };
 

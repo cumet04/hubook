@@ -1,7 +1,8 @@
-import { IssueComment, Actor } from "./github-v4";
 import {
   TQueryResult,
   Identifier,
+  Author,
+  Comment,
   authorQuery,
   commentsQuery,
   qlClient,
@@ -15,10 +16,10 @@ type Issue = {
   identifier: Identifier;
   title: string;
   status: "open" | "closed";
-  author: Actor;
+  author: Author;
   body: string;
   publishedAt: Date;
-  comments: IssueComment[];
+  comments: Comment[];
   nextCommentCursor: string | null;
 };
 

@@ -16,7 +16,7 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-subtitle>
-              <b>{{ subject.author.login }}</b> commented at
+              <b>{{ comment.author.login }}</b> commented at
               {{ formatDate(comment.publishedAt) }}
             </v-list-item-subtitle>
             <v-list-item-content>
